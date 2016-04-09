@@ -9,10 +9,16 @@
         android:text="Новое задание"
         android:id="@+id/btnGoTask" />
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/txtATask" />
+        android:id="@+id/txtATask" />-->
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvMain">
+    </ListView>
 </LinearLayout>

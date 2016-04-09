@@ -9,8 +9,7 @@ public class Task {
     private String startDate;
     private String endDate;
 
-    public Task(int id, String description, String startDate, String endDate) {
-        this.id = id;
+    public Task(String description, String startDate, String endDate) {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;

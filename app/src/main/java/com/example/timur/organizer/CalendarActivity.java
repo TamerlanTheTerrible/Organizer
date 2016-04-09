@@ -39,7 +39,7 @@ public class CalendarActivity extends ActionBarActivity{
         Date today = new Date();
         calendar.init(today, nextYear.getTime())
                 .withSelectedDate(today)
-                .inMode(CalendarPickerView.SelectionMode.RANGE);
+                .inMode(CalendarPickerView.SelectionMode.SINGLE);
         if(!(getDates().isEmpty())){
             calendar.highlightDates(getDates());
         }

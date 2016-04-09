@@ -82,4 +82,59 @@ public class DBService {
         }
         return  dates;
     }
+
+    public List<String> getTasks(String date){
+        List<String> tasks = new ArrayList<String>();
+        Cursor c = db.query("Task", null,  "ToDate = ?", new String[]{date}, null, null, null);
+        if(c.moveToFirst()){
+            int toTaskCol = c.getColumnIndex("Description");
+            do{
+                tasks.add(c.getString(toTaskCol));
+            }while (c.moveToNext());
+        }
+        return  tasks;
+    }
+
+    public List<String> getStartDates(String date){
+        List<String> dates = new ArrayList<String>();
+        Cursor c = db.query("Task", null,  "ToDate = ?", new String[]{date}, null, null, null);
+        if(c.moveToFirst()){
+            int toFromCol = c.getColumnIndex("FromDate");
+            do{
+                dates.add(c.getString(toFromCol));
+            }while (c.moveToNext());
+        }
+        return  dates;
+    }
+
+    public List<String> getFinishDates(String date){
+        List<String> dates = new ArrayList<String>();
+        Cursor c = db.query("Task", null,  "ToDate = ?", new String[]{date}, null, null, null);
+        if(c.moveToFirst()){
+            int toToCol = c.getColumnIndex("ToDate");
+            do{
+                dates.add(c.getString(toToCol));
+            }while (c.moveToNext());
+        }
+        return  dates;
+    }
+
+    public List<Task> getTasks2(String date){
+        List<Task> tasks = new ArrayList<Task>();
+        Cursor c = db.query("Task", null,  "ToDate = ?", new String[]{date}, null, null, null);
+        if(c.moveToFirst()){
+            int taskCol = c.getColumnIndex("Description");
+            int toFromCol = c.getColumnIndex("FromDate");
+            int toToCol = c.getColumnIndex("ToDate");
+            do{
+                String desc = c.getString(taskCol);
+                String from = c.getString(toFromCol);
+                String to = c.getString(toToCol);
+                Task task = new Task(desc, from, to);
+                tasks.add(task);
+
+            }while (c.moveToNext());
+        }
+        return  tasks;
+    }
 }
