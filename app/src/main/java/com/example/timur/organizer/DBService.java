@@ -59,17 +59,31 @@ public class DBService {
         db.insert("Task", null, cv);
     }
 
-    public String getTask(String strDate){
-        String task = "no task";
-        Cursor c = db.query("Task", null, "ToDate = ?", new String[]{strDate}, null, null, null);
+    public Task getTask(String desc){
+        Task task=null;
+        Cursor c = db.query("Task", null, "Description = ?", new String[]{desc}, null, null, null);
         if(c.moveToFirst()){
             int taskCol = c.getColumnIndex("Description");
+            int toCol = c.getColumnIndex("ToDate");
+            int fromCol = c.getColumnIndex("FromDate");
             do{
-                task = c.getString(taskCol);
+                String description = c.getString(taskCol);
+                String start = c.getString(fromCol);
+                String finish = c.getString(toCol);
+                task = new Task(description, start, finish);
+
             }while (c.moveToNext());
         }
         return task;
     }
+
+/*    public void updateTask(String task, String fromDate, String toDate, String initialTask){
+        ContentValues cv = new ContentValues();
+        cv.put("Description", task);
+        cv.put("FromDate", fromDate);
+        cv.put("ToDate", toDate);
+        db.update("Task", cv, "Description = ?", new String[]{initialTask});
+    }*/
 
     public List<String> getAllDates(){
         List<String> dates = new ArrayList<String>();
@@ -119,22 +133,4 @@ public class DBService {
         return  dates;
     }
 
-    public List<Task> getTasks2(String date){
-        List<Task> tasks = new ArrayList<Task>();
-        Cursor c = db.query("Task", null,  "ToDate = ?", new String[]{date}, null, null, null);
-        if(c.moveToFirst()){
-            int taskCol = c.getColumnIndex("Description");
-            int toFromCol = c.getColumnIndex("FromDate");
-            int toToCol = c.getColumnIndex("ToDate");
-            do{
-                String desc = c.getString(taskCol);
-                String from = c.getString(toFromCol);
-                String to = c.getString(toToCol);
-                Task task = new Task(desc, from, to);
-                tasks.add(task);
-
-            }while (c.moveToNext());
-        }
-        return  tasks;
-    }
 }

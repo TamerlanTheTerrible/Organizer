@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +34,7 @@ public class TaskListActivity extends Activity{
     final String TASK_DESCRIPTION = "description";
     final String START_DATE = "start";
     final String FINISH_DATE = "finish";
+    ArrayList<Map<String, Object>> data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,17 +54,27 @@ public class TaskListActivity extends Activity{
         btnNewTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent(TaskListActivity.this, TaskActivity.class);
-                sendIntent.putExtra("date", strDate);
-                startActivity(sendIntent);
-                finish();
+                if(!CalendarActivity.IS_REGISTERED){
+                    Toast.makeText(getApplicationContext(), "Пожалуйста, войдите в ситему", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(TaskListActivity.this, LoginActivity.class));
+                    finish();
+                }else{
+                    Intent sendIntent = new Intent(TaskListActivity.this, TaskActivity.class);
+                    sendIntent.putExtra("date", strDate);
+                    startActivity(sendIntent);
+                    finish();
+                }
             }
         });
 
+        fillList();
+    }
+
+    public void fillList(){
         List<String> tasks = new ArrayList<>(dbService.getTasks(strDate));
         List<String> fromDates = new ArrayList<>(dbService.getStartDates(strDate));
         List<String> toDates = new ArrayList<>(dbService.getFinishDates(strDate));
-        ArrayList<Map<String, Object>> data = new ArrayList<>(tasks.size());
+        data = new ArrayList<>(tasks.size());
         Map<String, Object> m;
         if(!(tasks.isEmpty())){
             for (int i=0; i<tasks.size(); i++){
@@ -71,7 +84,6 @@ public class TaskListActivity extends Activity{
                 m.put(FINISH_DATE, toDates.get(i));
                 data.add(m);
             }
-
             String[] from = {TASK_DESCRIPTION, START_DATE, FINISH_DATE};
             int[] to = {R.id.txtDesc, R.id.txtFromDate, R.id.txtToDate};
             SimpleAdapter simpleAdapter = new SimpleAdapter(this, data, R.layout.list_item2, from, to);
@@ -79,10 +91,7 @@ public class TaskListActivity extends Activity{
             lv = (ListView)findViewById(R.id.lvMain);
             lv.setAdapter(simpleAdapter);
         }
-
     }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

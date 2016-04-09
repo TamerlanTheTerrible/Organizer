@@ -23,6 +23,8 @@ public class CalendarActivity extends ActionBarActivity{
     private CalendarPickerView calendar;
     DBService dbService;
     SimpleDateFormat sdf;
+    public static String USERNAME;
+    public static boolean IS_REGISTERED = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,9 +42,7 @@ public class CalendarActivity extends ActionBarActivity{
         calendar.init(today, nextYear.getTime())
                 .withSelectedDate(today)
                 .inMode(CalendarPickerView.SelectionMode.SINGLE);
-        if(!(getDates().isEmpty())){
-            calendar.highlightDates(getDates());
-        }
+        calendar.highlightDates(getDates());
 
 
         calendar.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
@@ -52,6 +52,7 @@ public class CalendarActivity extends ActionBarActivity{
                 String strDate = sdf.format(date);
                 intent.putExtra("date", strDate);
                 startActivity(intent);
+
             }
 
             @Override
@@ -62,27 +63,7 @@ public class CalendarActivity extends ActionBarActivity{
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case R.id.action_settings:
-                return true;
-            case R.id.action_next:
-                ArrayList<Date> selectedDates = (ArrayList<Date>)calendar
-                        .getSelectedDates();
-                Toast.makeText(CalendarActivity.this, selectedDates.toString(),
-                        Toast.LENGTH_LONG).show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 
     private ArrayList<Date> getHolidays(){
         String dateInString = "10-05-2016";
@@ -121,7 +102,7 @@ public class CalendarActivity extends ActionBarActivity{
         ArrayList<String> strDates;
         if(!(dbService.getAllDates()).isEmpty()){
             strDates = new ArrayList<String>(dbService.getAllDates());
-            for (int i=0; i<strDates.size()-1; i++){
+            for (int i=0; i<strDates.size(); i++){
                 try {
                     dates.add(sdf.parse(strDates.get(i)));
                 } catch (ParseException e) {
@@ -135,6 +116,12 @@ public class CalendarActivity extends ActionBarActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dbService.close();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         dbService.close();
     }
 }

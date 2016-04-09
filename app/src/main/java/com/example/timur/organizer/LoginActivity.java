@@ -42,8 +42,10 @@ public class LoginActivity extends Activity{
                         break;
                     case R.id.btnLogin:
                         if(dbService.login(login, password)){
-                            Toast.makeText(getApplicationContext(), "Добро пажаловать", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(LoginActivity.this, Organizer.class));
+                            Toast.makeText(getApplicationContext(), "Добро пажаловать"+login, Toast.LENGTH_SHORT).show();
+                            CalendarActivity.IS_REGISTERED=true;
+                            CalendarActivity.USERNAME = login;
+                            startActivity(new Intent(LoginActivity.this, CalendarActivity.class));
                             finish();
                             break;
                         }else{

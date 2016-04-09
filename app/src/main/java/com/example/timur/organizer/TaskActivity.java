@@ -25,8 +25,8 @@ public class TaskActivity extends Activity {
 
     int DIALOG_DATE;
     int myYear = 2016;
-    int myMonth = 01;
-    int myDay = 01;
+    int myMonth = 05;
+    int myDay = 10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +47,9 @@ public class TaskActivity extends Activity {
         String strDate = receiveIntent.getStringExtra("date");
         txtFromDate.setText(strDate);
         txtToDate.setText(strDate);
+
+
+
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -107,13 +110,19 @@ public class TaskActivity extends Activity {
 
     void cancel(){
         edtTask.setText("");
-        startActivity(new Intent(TaskActivity.this, Organizer.class));
+        startActivity(new Intent(TaskActivity.this, CalendarActivity.class));
         finish();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dbService.close();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         dbService.close();
     }
 }
